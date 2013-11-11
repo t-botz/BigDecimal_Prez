@@ -30,6 +30,7 @@ object TestBigDecimal {
     myDoubles.map(_ * 1000)
     val ts4 = System.nanoTime()
     println("Time to process Double     : "+humanReadableduration(ts3, ts4))
+    println("Ratios : " + (ts2-ts1).toDouble / (ts4-ts3).toDouble)
   }
 
   def humanReadableByteCount(bytes: Long): String = {
