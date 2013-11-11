@@ -5,14 +5,14 @@ import java.math.MathContext
 import jdk.nashorn.internal.ir.debug.ObjectSizeCalculator
 import java.text.SimpleDateFormat
 
-object TestBigDecimal {
+object BenchmarkBigDecimal {
 
   val ITER: Int = 10000000
   def main(args: Array[String]): Unit = {
     val myBds: Array[BigDecimal] =
       for (i <- Array.range(1, ITER))
         yield BigDecimal(Random.nextDouble, MathContext.DECIMAL32)
-    val myDoubles = myBds.map(_.toDouble)
+    val myDoubles: Array[Double]  = myBds.map(_.toDouble)
 
     val bdSize = ObjectSizeCalculator.getObjectSize(myBds)
     val doubleSize = ObjectSizeCalculator.getObjectSize(myDoubles)
@@ -44,5 +44,17 @@ object TestBigDecimal {
     val durationInMs = (timestampEndInNano - timestampStartInNano) / (1000 * 1000)
     println(durationInMs)
     "%d:%02d:%02d.%d".format((durationInMs / (1000*60*60)) % 24, durationInMs / (1000*60) % 60, durationInMs / 1000 % 60, durationInMs % 1000)
+  }
+}
+
+object TestBigDecimal {
+
+  def main(args: Array[String]): Unit = {
+    println(BigDecimal(123456789, new MathContext(5)))
+    println(BigDecimal(123456789l, new MathContext(5)))
+    
+    println(1d / 3d)
+    println(BigDecimal(1) / BigDecimal(3))
+    println(new java.math.BigDecimal(1).divide(new java.math.BigDecimal(3)))
   }
 }
