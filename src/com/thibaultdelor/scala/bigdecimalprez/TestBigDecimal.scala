@@ -50,6 +50,10 @@ object BenchmarkBigDecimal {
 object TestBigDecimal {
 
   def main(args: Array[String]): Unit = {
+    
+    println(BigDecimal(123456789, new MathContext(5)) / BigDecimal(10))
+
+    
     println(BigDecimal(123456789, new MathContext(5)))
     println(BigDecimal(123456789l, new MathContext(5)))
     
