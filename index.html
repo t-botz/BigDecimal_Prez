@@ -14,7 +14,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-        <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/reveal.min.css">
     <link rel="stylesheet" href="css/theme/default.css" id="theme">
 
     <!-- For syntax highlighting -->
@@ -53,11 +53,12 @@
                     <li>Need to have a big cache of prices</li>
                     <li>"Only" 8GB of memory</li>
                 </ul>
-                <img src="img/bigstock-Thinking-man-Detailed-vector-25171361.png" width="400px" />
+                <img src="img/bigstock-Thinking-man-Detailed-vector-25171361.png" width="400px"/>
             </div>
         </section>
         <section>
             <h2>Primitives in Scala</h2>
+
             <div>
                 <ul>
                     <li>AnyVal extends Any with <b>NotNull</b></li>
@@ -68,7 +69,51 @@
         </section>
         <section>
             <h2>On the bench</h2>
-            
+            <div class="fragment disappear" data-fragment-index="0">
+            <pre style="background:#181818;color:#f8f8f8">    <span style="color:#cda869">val</span> <span
+                    style="color:#9b703f">ITER</span>: <span style="color:#f9ee98">Int</span> = <span
+                    style="color:#cf6a4c">10000000</span>
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">myBds</span>: <span
+                        style="color:#9b703f">Array</span>[<span style="color:#9b703f">BigDecimal</span>] =
+      <span style="color:#cda869">for</span> (i &lt;- <span style="color:#9b703f">Array</span>.range(<span
+                        style="color:#cf6a4c">1</span>, <span style="color:#9b703f">ITER</span>))
+        <span style="color:#cda869">yield</span> <span style="color:#9b703f">BigDecimal</span>(<span
+                        style="color:#9b703f">Random</span>.nextDouble, <span
+                        style="color:#9b703f">MathContext</span>.<span style="color:#9b703f">DECIMAL32</span>)
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">myDoubles</span>: <span style="color:#9b703f">Array</span>[<span
+                        style="color:#f9ee98">Double</span>]  = myBds.map(_.toDouble)
+
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">bdSize</span> = <span style="color:#9b703f">ObjectSizeCalculator</span>.getObjectSize(myBds)
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">doubleSize</span> = <span style="color:#9b703f">ObjectSizeCalculator</span>.getObjectSize(myDoubles)
+
+    println(<span style="color:#8f9d6a">"BigDecimal size : "</span> + humanReadableByteCount(bdSize))
+    println(<span style="color:#8f9d6a">"Double size     : "</span> + humanReadableByteCount(doubleSize))
+    println(<span style="color:#8f9d6a">"Ratios : "</span> + bdSize.toDouble / doubleSize.toDouble)
+
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">ts1</span> = <span
+                        style="color:#9b703f">System</span>.nanoTime()
+    myBds.map(_ * <span style="color:#cf6a4c">1000</span>)
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">ts2</span> = <span
+                        style="color:#9b703f">System</span>.nanoTime()
+    println(<span style="color:#8f9d6a">"Time to process BigDecimal : "</span>+humanReadableduration(ts1, ts2))
+
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">ts3</span> = <span
+                        style="color:#9b703f">System</span>.nanoTime()
+    myDoubles.map(_ * <span style="color:#cf6a4c">1000</span>)
+    <span style="color:#cda869">val</span> <span style="color:#9b703f">ts4</span> = <span
+                        style="color:#9b703f">System</span>.nanoTime()
+    println(<span style="color:#8f9d6a">"Time to process Double     : "</span>+humanReadableduration(ts3, ts4))
+    println(<span style="color:#8f9d6a">"Ratios : "</span> + (ts2-ts1).toDouble / (ts4-ts3).toDouble)
+</pre>
+                </div>
+            <pre class="fragment"  data-fragment-index="0">
+BigDecimal size : 648.5 MB
+Double size     : 76.3 MB
+Ratios : 8.499999950000005
+Time to process BigDecimal : 0:00:15.316
+Time to process Double     : 0:00:02.384
+Ratios : 6.42464275707397
+                </pre>
         </section>
         <section>
             <h2>Characteristics of BigDecimal</h2>
@@ -82,31 +127,44 @@
         </section>
         <section>
             <h2>Examples</h2>
+
             <div style="text-align: left">A simple mistake</div>
-            <pre style="background:#181818;color:#f8f8f8"><span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789</span>, <span style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) / <span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">10</span>) <span style="color:#5f5a60;font-style:italic">//1.2346E+7</span>
+            <pre style="background:#181818;color:#f8f8f8"><span style="color:#9b703f">BigDecimal</span>(<span
+                    style="color:#cf6a4c">123456789</span>, <span style="color:#cda869">new</span> <span
+                    style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) / <span
+                    style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">10</span>) <span
+                    style="color:#5f5a60;font-style:italic">//1.2346E+7</span>
 </pre>
 
             <div style="text-align: left; margin-top:40px">A scala weirdness</div>
-            <pre style="background:#181818;color:#f8f8f8"><span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789</span>, <span style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) <span style="color:#5f5a60;font-style:italic">// 123456789</span>
-<span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789l</span>, <span style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) <span style="color:#5f5a60;font-style:italic">// 1.2346E+8</span>
+            <pre style="background:#181818;color:#f8f8f8"><span style="color:#9b703f">BigDecimal</span>(<span
+                    style="color:#cf6a4c">123456789</span>, <span style="color:#cda869">new</span> <span
+                    style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) <span
+                    style="color:#5f5a60;font-style:italic">// 123456789</span>
+<span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789l</span>, <span
+                        style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span
+                        style="color:#cf6a4c">5</span>)) <span
+                        style="color:#5f5a60;font-style:italic">// 1.2346E+8</span>
 </pre>
 
             <div style="text-align: left; margin-top: 40px">Differences on precison</div>
-<pre style="background:#181818;color:#f8f8f8"><span style="color:#cf6a4c">1d</span> / <span style="color:#cf6a4c">3d</span> <span style="color:#5f5a60;font-style:italic">//0.3333333333333333</span>
-<span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">1</span>) / <span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">3</span>) <span style="color:#5f5a60;font-style:italic">//0.3333333333333333333333333333333333</span>
-<span style="color:#cda869">new</span> <span style="color:#9b703f">java.math.BigDecimal</span>(<span style="color:#cf6a4c">1</span>).divide(<span style="color:#cda869">new</span> <span style="color:#9b703f">java.math.BigDecimal</span>(<span style="color:#cf6a4c">3</span>)) <span style="color:#5f5a60;font-style:italic">//java.lang.ArithmeticException</span>
+<pre style="background:#181818;color:#f8f8f8"><span style="color:#cf6a4c">1d</span> / <span
+        style="color:#cf6a4c">3d</span> <span style="color:#5f5a60;font-style:italic">//0.3333333333333333</span>
+<span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">1</span>) / <span style="color:#9b703f">BigDecimal</span>(<span
+            style="color:#cf6a4c">3</span>) <span style="color:#5f5a60;font-style:italic">//0.3333333333333333333333333333333333</span>
+<span style="color:#cda869">new</span> <span style="color:#9b703f">java.math.BigDecimal</span>(<span
+            style="color:#cf6a4c">1</span>).divide(<span style="color:#cda869">new</span> <span style="color:#9b703f">java.math.BigDecimal</span>(<span
+            style="color:#cf6a4c">3</span>)) <span style="color:#5f5a60;font-style:italic">//java.lang.ArithmeticException</span>
 </pre>
-            <!--code-->
         </section>
         <section>
             <h2>Long as an option?</h2>
             <ul>
                 <li>Efficient</li>
                 <li>Convenient for fixed point numbers</li>
-                <li>64bits only</li>
-                <li>Binary, not exact decimal value</li>
+                <li>Very limited</li>
+                <li>Overhead in the code</li>
             </ul>
-            <!--code-->
         </section>
         <section>
             <h2>Double as an option?</h2>
@@ -117,7 +175,11 @@
                 <li>Binary, not exact decimal value</li>
                 <li>Rounding needed</li>
             </ul>
-            <!--code-->
+        </section>
+        <section>
+            <h2>Conclusion</h2>
+            <div>If you don't need more than 15 digits</div>
+            <div style="font-size: 2em; margin-top: 100px">Use Double!</div>
         </section>
     </div>
 
