@@ -77,7 +77,20 @@
         </section>
         <section>
             <h2>Examples</h2>
-            
+            <div style="text-align: left">A simple mistake</div>
+            <pre style="background:#181818;color:#f8f8f8"><span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789</span>, <span style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) / <span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">10</span>) <span style="color:#5f5a60;font-style:italic">//1.2346E+7</span>
+</pre>
+
+            <div style="text-align: left; margin-top:40px">A scala weirdness</div>
+            <pre style="background:#181818;color:#f8f8f8"><span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789</span>, <span style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) <span style="color:#5f5a60;font-style:italic">// 123456789</span>
+<span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">123456789l</span>, <span style="color:#cda869">new</span> <span style="color:#9b703f">MathContext</span>(<span style="color:#cf6a4c">5</span>)) <span style="color:#5f5a60;font-style:italic">// 1.2346E+8</span>
+</pre>
+
+            <div style="text-align: left; margin-top: 40px">Differences on precison</div>
+<pre style="background:#181818;color:#f8f8f8"><span style="color:#cf6a4c">1d</span> / <span style="color:#cf6a4c">3d</span> <span style="color:#5f5a60;font-style:italic">//0.3333333333333333</span>
+<span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">1</span>) / <span style="color:#9b703f">BigDecimal</span>(<span style="color:#cf6a4c">3</span>) <span style="color:#5f5a60;font-style:italic">//0.3333333333333333333333333333333333</span>
+<span style="color:#cda869">new</span> <span style="color:#9b703f">java.math.BigDecimal</span>(<span style="color:#cf6a4c">1</span>).divide(<span style="color:#cda869">new</span> <span style="color:#9b703f">java.math.BigDecimal</span>(<span style="color:#cf6a4c">3</span>)) <span style="color:#5f5a60;font-style:italic">//java.lang.ArithmeticException</span>
+</pre>
             <!--code-->
         </section>
         <section>
